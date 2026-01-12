@@ -1,30 +1,305 @@
 "use client";
 
-import { useState } from "react";
 import {
-  Map,
-  MapControls,
-  MapMarker,
-  MarkerContent,
-  MarkerLabel,
-  MarkerTooltip,
-  MapRoute,
-} from "@/registry/map";
-import { Truck, Flame, TrendingUp, Zap } from "lucide-react";
+  MindMap,
+  MindMapControls,
+} from "@/registry/mindmap";
 import { cn } from "@/lib/utils";
 
-const analyticsData = [
-  { lng: -74.006, lat: 40.7128, city: "New York", users: 847, size: 14 },
-  { lng: -0.1276, lat: 51.5074, city: "London", users: 623, size: 12 },
-  { lng: 139.6917, lat: 35.6895, city: "Tokyo", users: 412, size: 10 },
-  { lng: -122.4194, lat: 37.7749, city: "San Francisco", users: 298, size: 9 },
-  { lng: 2.3522, lat: 48.8566, city: "Paris", users: 187, size: 8 },
-  { lng: 77.209, lat: 28.6139, city: "Delhi", users: 156, size: 7 },
-  { lng: 151.2093, lat: -33.8688, city: "Sydney", users: 134, size: 7 },
-  { lng: -43.1729, lat: -22.9068, city: "Rio", users: 89, size: 6 },
-  { lng: 4.9041, lat: 52.3676, city: "Amsterdam", users: 76, size: 5 },
-  { lng: 126.978, lat: 37.5665, city: "Seoul", users: 45, size: 5 },
-];
+// Sample mind map data
+const organizationalData = {
+  nodeData: {
+    id: "root",
+    topic: "TechCorp Inc.",
+    root: true,
+    children: [
+      {
+        id: "ceo",
+        topic: "CEO",
+        direction: 0,
+        children: [
+          {
+            id: "cto",
+            topic: "CTO",
+            children: [
+              { id: "dev", topic: "Development Team" },
+              { id: "qa", topic: "QA Team" },
+            ],
+          },
+          {
+            id: "cfo",
+            topic: "CFO",
+            children: [
+              { id: "accounting", topic: "Accounting" },
+              { id: "finance", topic: "Finance" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "coo",
+        topic: "COO",
+        direction: 1,
+        children: [
+          {
+            id: "hr",
+            topic: "HR",
+            children: [
+              { id: "recruiting", topic: "Recruiting" },
+              { id: "training", topic: "Training" },
+            ],
+          },
+          {
+            id: "ops",
+            topic: "Operations",
+            children: [
+              { id: "logistics", topic: "Logistics" },
+              { id: "support", topic: "Support" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+};
+
+const projectPlanningData = {
+  nodeData: {
+    id: "root",
+    topic: "Website Redesign",
+    root: true,
+    children: [
+      {
+        id: "research",
+        topic: "Research",
+        direction: 0,
+        children: [
+          { id: "user-research", topic: "User Research", tags: ["Week 1"] },
+          { id: "competitor", topic: "Competitor Analysis", tags: ["Week 1"] },
+        ],
+      },
+      {
+        id: "design",
+        topic: "Design",
+        direction: 0,
+        children: [
+          { id: "wireframes", topic: "Wireframes", tags: ["Week 2"] },
+          { id: "mockups", topic: "Mockups", tags: ["Week 3"] },
+          { id: "prototype", topic: "Prototype", tags: ["Week 4"] },
+        ],
+      },
+      {
+        id: "development",
+        topic: "Development",
+        direction: 1,
+        children: [
+          { id: "frontend", topic: "Frontend", tags: ["Week 5-6"] },
+          { id: "backend", topic: "Backend", tags: ["Week 5-6"] },
+          { id: "testing", topic: "Testing", tags: ["Week 7"] },
+        ],
+      },
+      {
+        id: "launch",
+        topic: "Launch",
+        direction: 1,
+        children: [
+          { id: "deployment", topic: "Deployment", tags: ["Week 8"] },
+          { id: "monitoring", topic: "Monitoring", tags: ["Ongoing"] },
+        ],
+      },
+    ],
+  },
+};
+
+const knowledgeGraphData = {
+  nodeData: {
+    id: "root",
+    topic: "Web Development",
+    root: true,
+    children: [
+      {
+        id: "frontend",
+        topic: "Frontend",
+        direction: 0,
+        children: [
+          {
+            id: "html",
+            topic: "HTML",
+            children: [
+              { id: "semantic", topic: "Semantic HTML" },
+              { id: "forms", topic: "Forms" },
+            ],
+          },
+          {
+            id: "css",
+            topic: "CSS",
+            children: [
+              { id: "flexbox", topic: "Flexbox" },
+              { id: "grid", topic: "Grid" },
+            ],
+          },
+          {
+            id: "js",
+            topic: "JavaScript",
+            children: [
+              { id: "es6", topic: "ES6+" },
+              { id: "async", topic: "Async/Await" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "backend",
+        topic: "Backend",
+        direction: 1,
+        children: [
+          {
+            id: "nodejs",
+            topic: "Node.js",
+            children: [
+              { id: "express", topic: "Express" },
+              { id: "nestjs", topic: "NestJS" },
+            ],
+          },
+          {
+            id: "database",
+            topic: "Database",
+            children: [
+              { id: "sql", topic: "SQL" },
+              { id: "nosql", topic: "NoSQL" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+};
+
+const brainstormingData = {
+  nodeData: {
+    id: "root",
+    topic: "Mobile App Ideas",
+    root: true,
+    children: [
+      {
+        id: "productivity",
+        topic: "Productivity",
+        direction: 0,
+        children: [
+          { id: "task-manager", topic: "Smart Task Manager", icons: ["📝"] },
+          { id: "time-tracker", topic: "Time Tracker", icons: ["⏱️"] },
+          { id: "habit", topic: "Habit Builder", icons: ["🎯"] },
+        ],
+      },
+      {
+        id: "social",
+        topic: "Social",
+        direction: 0,
+        children: [
+          { id: "community", topic: "Community Platform", icons: ["👥"] },
+          { id: "events", topic: "Event Finder", icons: ["🎉"] },
+        ],
+      },
+      {
+        id: "health",
+        topic: "Health & Fitness",
+        direction: 1,
+        children: [
+          { id: "workout", topic: "Workout Planner", icons: ["💪"] },
+          { id: "nutrition", topic: "Nutrition Tracker", icons: ["🥗"] },
+          { id: "meditation", topic: "Meditation Guide", icons: ["🧘"] },
+        ],
+      },
+      {
+        id: "education",
+        topic: "Education",
+        direction: 1,
+        children: [
+          { id: "language", topic: "Language Learning", icons: ["🗣️"] },
+          { id: "coding", topic: "Coding Tutorials", icons: ["💻"] },
+        ],
+      },
+    ],
+  },
+};
+
+const decisionTreeData = {
+  nodeData: {
+    id: "root",
+    topic: "Choose Tech Stack",
+    root: true,
+    children: [
+      {
+        id: "type",
+        topic: "Project Type?",
+        direction: 0,
+        children: [
+          {
+            id: "web-app",
+            topic: "Web App",
+            children: [
+              {
+                id: "react",
+                topic: "React + Next.js",
+                style: { background: "#10b981", color: "#fff" },
+              },
+              {
+                id: "vue",
+                topic: "Vue + Nuxt",
+                style: { background: "#10b981", color: "#fff" },
+              },
+            ],
+          },
+          {
+            id: "mobile",
+            topic: "Mobile App",
+            children: [
+              {
+                id: "rn",
+                topic: "React Native",
+                style: { background: "#10b981", color: "#fff" },
+              },
+              {
+                id: "flutter",
+                topic: "Flutter",
+                style: { background: "#10b981", color: "#fff" },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "scale",
+        topic: "Scale?",
+        direction: 1,
+        children: [
+          {
+            id: "small",
+            topic: "Small/MVP",
+            children: [
+              {
+                id: "serverless",
+                topic: "Serverless",
+                style: { background: "#3b82f6", color: "#fff" },
+              },
+            ],
+          },
+          {
+            id: "large",
+            topic: "Large/Enterprise",
+            children: [
+              {
+                id: "microservices",
+                topic: "Microservices",
+                style: { background: "#3b82f6", color: "#fff" },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+};
 
 function ExampleCard({
   label,
@@ -56,296 +331,73 @@ function ExampleCard({
 }
 
 export function Examples() {
-  const [userLocation, setUserLocation] = useState<{
-    longitude: number;
-    latitude: number;
-  } | null>(null);
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in delay-400">
-      {/* Widget 1: Analytics */}
+      {/* Widget 1: Organizational Chart */}
       <ExampleCard
-        label=""
-        className="aspect-square sm:col-span-2 sm:aspect-video lg:aspect-auto"
+        label="Organizational Chart"
+        className="aspect-square sm:col-span-2 sm:aspect-video lg:aspect-auto lg:h-[330px]"
         delay="delay-400"
       >
-        {/* Stats Panel */}
-        <div className="absolute top-3 left-3 z-10 bg-background/95 backdrop-blur-md rounded-lg p-3 border border-border/50 shadow-lg">
-          <div className="tracking-wider text-[10px] text-muted-foreground uppercase mb-1">
-            Active Users
-          </div>
-          <div className="text-2xl font-semibold leading-tight">2,847</div>
-          <div className="flex items-center gap-1 mt-1">
-            <TrendingUp className="size-3 text-emerald-500" />
-            <span className="text-xs text-emerald-500">+12.5%</span>
-            <span className="text-xs text-muted-foreground">vs last hour</span>
-          </div>
-        </div>
-
-        {/* Legend */}
-        <div className="absolute bottom-3 left-3 z-10 bg-background/95 backdrop-blur-md rounded-lg px-3 py-2 border border-border/50 shadow-lg">
-          <div className="flex items-center gap-4 text-[10px]">
-            <div className="flex items-center gap-1.5">
-              <div className="size-3 rounded-full bg-emerald-500" />
-              <span className="text-muted-foreground">High</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="size-2 rounded-full bg-emerald-500" />
-              <span className="text-muted-foreground">Medium</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="size-1.5 rounded-full bg-emerald-500" />
-              <span className="text-muted-foreground">Low</span>
-            </div>
-          </div>
-        </div>
-
-        <Map center={[0, 30]} zoom={0.8}>
-          {analyticsData.map((loc) => (
-            <MapMarker key={loc.city} longitude={loc.lng} latitude={loc.lat}>
-              <MarkerContent>
-                <div className="relative flex items-center justify-center">
-                  <div
-                    className="absolute rounded-full bg-emerald-500/20"
-                    style={{
-                      width: loc.size * 2.5,
-                      height: loc.size * 2.5,
-                    }}
-                  />
-                  <div
-                    className="absolute rounded-full bg-emerald-500/40 animate-ping"
-                    style={{
-                      width: loc.size * 1.5,
-                      height: loc.size * 1.5,
-                      animationDuration: "2s",
-                    }}
-                  />
-                  <div
-                    className="relative rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"
-                    style={{ width: loc.size, height: loc.size }}
-                  />
-                </div>
-              </MarkerContent>
-              <MarkerTooltip>
-                <div className="text-center">
-                  <div className="font-medium">{loc.city}</div>
-                  <div className="text-emerald-500 font-semibold">
-                    {loc.users}
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    active users
-                  </div>
-                </div>
-              </MarkerTooltip>
-            </MapMarker>
-          ))}
-        </Map>
+        <MindMap
+          data={organizationalData}
+          direction={1}
+          className="h-full"
+        >
+          <MindMapControls position="top-right" />
+        </MindMap>
       </ExampleCard>
 
-      {/* Widget 2: Delivery */}
-      <ExampleCard label="Delivery" className="aspect-square" delay="delay-500">
-        <Map center={[-0.1076, 51.517]} zoom={12}>
-          <MapRoute
-            coordinates={[
-              [-0.1276, 51.5074],
-              [-0.12, 51.512],
-              [-0.105, 51.518],
-              [-0.095, 51.522],
-              [-0.0876, 51.5274],
-            ]}
-            width={4}
-            color="#4285F4"
-          />
-          <MapMarker longitude={-0.1276} latitude={51.5074}>
-            <MarkerContent>
-              <div className="size-3.5 rounded-full bg-blue-500 border-2 border-white shadow-lg" />
-              <MarkerLabel>Store</MarkerLabel>
-            </MarkerContent>
-          </MapMarker>
-          <MapMarker longitude={-0.105} latitude={51.518}>
-            <MarkerContent>
-              <div className="bg-blue-500 rounded-full p-1.5 shadow-lg">
-                <Truck className="size-3 text-white" />
-              </div>
-            </MarkerContent>
-            <MarkerTooltip>On the way</MarkerTooltip>
-          </MapMarker>
-          <MapMarker longitude={-0.0876} latitude={51.5274}>
-            <MarkerContent>
-              <div className="size-3.5 rounded-full bg-blue-500 border-2 border-white shadow-lg" />
-              <MarkerLabel>Home</MarkerLabel>
-            </MarkerContent>
-          </MapMarker>
-        </Map>
+      {/* Widget 2: Project Planning */}
+      <ExampleCard label="Project Planning" className="aspect-square" delay="delay-500">
+        <MindMap
+          data={projectPlanningData}
+          direction={1}
+          className="h-full"
+        >
+          <MindMapControls position="top-right" showExport={false} />
+        </MindMap>
       </ExampleCard>
 
-      {/* Widget 3: Trending */}
-      <ExampleCard label="Trending" className="aspect-square" delay="delay-600">
-        <Map center={[-73.99, 40.735]} zoom={9.5}>
-          <MapMarker longitude={-73.9857} latitude={40.7484}>
-            <MarkerContent>
-              <div className="relative flex items-center justify-center">
-                <div className="absolute size-12 rounded-full bg-orange-500/30" />
-                <div className="absolute size-7 rounded-full bg-orange-500/40" />
-                <div className="bg-linear-to-br from-orange-500 to-red-500 rounded-full p-1.5 shadow-lg shadow-orange-500/50">
-                  <Flame className="size-3.5 text-white" />
-                </div>
-              </div>
-            </MarkerContent>
-            <MarkerTooltip>
-              <div className="text-center">
-                <div className="font-medium">Times Square</div>
-                <div className="flex items-center justify-center gap-1 text-muted-foreground">
-                  <TrendingUp className="size-3 text-green-500" />
-                  <span className="text-xs text-green-500">2.4k visitors</span>
-                </div>
-              </div>
-            </MarkerTooltip>
-          </MapMarker>
-          <MapMarker longitude={-73.9654} latitude={40.7829}>
-            <MarkerContent>
-              <div className="relative flex items-center justify-center">
-                <div className="absolute size-10 rounded-full bg-rose-500/30" />
-                <div className="bg-linear-to-br from-rose-500 to-pink-500 rounded-full p-1.5 shadow-lg shadow-rose-500/50">
-                  <Flame className="size-3 text-white" />
-                </div>
-              </div>
-            </MarkerContent>
-            <MarkerTooltip>
-              <div className="text-center">
-                <div className="font-medium">Central Park</div>
-                <div className="flex items-center justify-center gap-1 text-muted-foreground">
-                  <TrendingUp className="size-3 text-green-500" />
-                  <span className="text-xs text-green-500">1.8k visitors</span>
-                </div>
-              </div>
-            </MarkerTooltip>
-          </MapMarker>
-          <MapMarker longitude={-74.0445} latitude={40.6892}>
-            <MarkerContent>
-              <div className="relative flex items-center justify-center">
-                <div className="absolute size-8 rounded-full bg-amber-500/30" />
-                <div className="bg-linear-to-br from-amber-500 to-yellow-500 rounded-full p-1 shadow-lg shadow-amber-500/50">
-                  <Flame className="size-2.5 text-white" />
-                </div>
-              </div>
-            </MarkerContent>
-            <MarkerTooltip>
-              <div className="text-center">
-                <div className="font-medium">Statue of Liberty</div>
-                <div className="flex items-center justify-center gap-1 text-muted-foreground">
-                  <TrendingUp className="size-3 text-green-500" />
-                  <span className="text-xs text-green-500">890 visitors</span>
-                </div>
-              </div>
-            </MarkerTooltip>
-          </MapMarker>
-        </Map>
+      {/* Widget 3: Knowledge Graph */}
+      <ExampleCard label="Knowledge Graph" className="aspect-square" delay="delay-600">
+        <MindMap
+          data={knowledgeGraphData}
+          direction={1}
+          className="h-full"
+        >
+          <MindMapControls position="top-right" showExport={false} />
+        </MindMap>
       </ExampleCard>
 
-      {/* Widget 4: EV Charging */}
+      {/* Widget 4: Brainstorming */}
       <ExampleCard
-        label="EV Charging"
+        label="Brainstorming"
         className="aspect-square"
         delay="delay-700"
       >
-        <Map center={[-122.425, 37.777]} zoom={11.5}>
-          <MapMarker longitude={-122.4194} latitude={37.7749}>
-            <MarkerContent>
-              <div className="bg-emerald-500 rounded-full p-1.5 shadow-lg shadow-emerald-500/30">
-                <Zap className="size-3 text-white fill-white" />
-              </div>
-            </MarkerContent>
-            <MarkerTooltip>
-              <div className="text-xs space-y-0.5">
-                <div className="font-medium">Market St Station</div>
-                <div className="flex items-center gap-1">
-                  <span className="size-1.5 rounded-full bg-emerald-500" />
-                  <span className="text-emerald-500">Available</span>
-                </div>
-                <div className="text-muted-foreground">150 kW • $0.35/kWh</div>
-              </div>
-            </MarkerTooltip>
-          </MapMarker>
-
-          <MapMarker longitude={-122.4094} latitude={37.7849}>
-            <MarkerContent>
-              <div className="bg-emerald-500 rounded-full p-1.5 shadow-lg shadow-emerald-500/30">
-                <Zap className="size-3 text-white fill-white" />
-              </div>
-            </MarkerContent>
-            <MarkerTooltip>
-              <div className="text-xs space-y-0.5">
-                <div className="font-medium">Union Square</div>
-                <div className="flex items-center gap-1">
-                  <span className="size-1.5 rounded-full bg-emerald-500" />
-                  <span className="text-emerald-500">2 Available</span>
-                </div>
-                <div className="text-muted-foreground">50 kW • $0.28/kWh</div>
-              </div>
-            </MarkerTooltip>
-          </MapMarker>
-
-          <MapMarker longitude={-122.4294} latitude={37.7689}>
-            <MarkerContent>
-              <div className="bg-amber-500 rounded-full p-1.5 shadow-lg shadow-amber-500/30">
-                <Zap className="size-3 text-white fill-white" />
-              </div>
-            </MarkerContent>
-            <MarkerTooltip>
-              <div className="text-xs space-y-0.5">
-                <div className="font-medium">Castro Station</div>
-                <div className="flex items-center gap-1">
-                  <span className="size-1.5 rounded-full bg-amber-500" />
-                  <span className="text-amber-500">In Use</span>
-                </div>
-                <div className="text-muted-foreground">~15 min remaining</div>
-              </div>
-            </MarkerTooltip>
-          </MapMarker>
-
-          <MapMarker longitude={-122.4394} latitude={37.7809}>
-            <MarkerContent>
-              <div className="bg-zinc-400 rounded-full p-1.5 shadow-lg">
-                <Zap className="size-3 text-white fill-white" />
-              </div>
-            </MarkerContent>
-            <MarkerTooltip>
-              <div className="text-xs space-y-0.5">
-                <div className="font-medium">Hayes Valley</div>
-                <div className="flex items-center gap-1">
-                  <span className="size-1.5 rounded-full bg-zinc-400" />
-                  <span className="text-muted-foreground">Offline</span>
-                </div>
-              </div>
-            </MarkerTooltip>
-          </MapMarker>
-        </Map>
+        <MindMap
+          data={brainstormingData}
+          direction={1}
+          className="h-full"
+        >
+          <MindMapControls position="top-right" showExport={false} />
+        </MindMap>
       </ExampleCard>
 
-      {/* Widget 5: Locate Me */}
+      {/* Widget 5: Decision Tree */}
       <ExampleCard
-        label="Locate Me"
+        label="Decision Tree"
         className="aspect-square"
         delay="delay-800"
       >
-        <Map center={[77.5946, 12.9716]} zoom={10.5}>
-          <MapControls showZoom={false} showLocate onLocate={setUserLocation} />
-          {userLocation && (
-            <MapMarker
-              longitude={userLocation.longitude}
-              latitude={userLocation.latitude}
-            >
-              <MarkerContent>
-                <div className="relative flex items-center justify-center">
-                  <div className="absolute size-5 rounded-full bg-blue-500/30 animate-ping" />
-                  <div className="size-3 rounded-full bg-blue-500 border-2 border-white shadow-lg" />
-                </div>
-              </MarkerContent>
-              <MarkerTooltip>Your Location</MarkerTooltip>
-            </MapMarker>
-          )}
-        </Map>
+        <MindMap
+          data={decisionTreeData}
+          direction={1}
+          className="h-full"
+        >
+          <MindMapControls position="top-right" showExport={false} />
+        </MindMap>
       </ExampleCard>
     </div>
   );

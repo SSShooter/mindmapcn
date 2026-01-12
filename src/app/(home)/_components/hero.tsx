@@ -7,7 +7,7 @@ import { useState } from "react";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "site-url-here";
 
-const installCommand = `npx shadcn@latest add ${siteUrl}/maps/map.json`;
+const installCommand = `npx shadcn@latest add ${siteUrl}/mindmaps/mindmap.json`;
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -37,10 +37,10 @@ export function Hero() {
     <div className="space-y-8">
       <div className="text-center space-y-4">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight animate-fade-up">
-          Beautiful maps, made simple.
+          Beautiful mind maps, made simple.
         </h1>
         <p className="text-foreground/80 text-lg max-w-xl mx-auto animate-fade-up delay-100">
-          Beautifully designed, Open source map components. Zero config. One
+          Beautifully designed, Open source mind map components. Zero config. One
           command setup.
         </p>
       </div>
