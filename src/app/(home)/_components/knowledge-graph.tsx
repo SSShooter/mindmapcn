@@ -74,6 +74,7 @@ export function KnowledgeGraph() {
         data={knowledgeGraphData}
         direction={1}
         className="h-full"
+        monochrome
       >
         <MindMapControls position="top-right" showExport={false} />
       </MindMap>

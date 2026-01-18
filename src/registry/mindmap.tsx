@@ -14,7 +14,7 @@ import {
 import { Minus, Plus, Download, Maximize2, Loader2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { MindElixirInstance, NodeObj, Options } from "mind-elixir";
+import { type MindElixirInstance, type NodeObj, type Options, type Theme as MindElixirTheme } from "mind-elixir";
 
 // Check document class for theme (works with next-themes, etc.)
 function getDocumentTheme(): Theme | null {
@@ -114,6 +114,7 @@ interface MindMapProps {
   overflowHidden?: boolean;
   mainLinkStyle?: number;
   theme?: "dark" | "light";
+  monochrome?: boolean;
   fit?: boolean;
   onOperation?: (operation: unknown) => void;
   onSelectNodes?: (nodeObj: NodeObj[]) => void;
@@ -126,6 +127,168 @@ function DefaultLoader() {
       <Loader2 className="size-8 animate-spin text-muted-foreground" />
     </div>
   );
+}
+
+// Common spacing and layout configuration
+const commonSpacing = {
+  "--node-gap-x": "48px",
+  "--node-gap-y": "16px",
+  "--main-gap-x": "24px",
+  "--main-gap-y": "32px",
+  "--root-radius": "0.625rem",
+  "--main-radius": "0.5rem",
+  "--topic-padding": "8px 16px",
+  "--map-padding": "48px",
+};
+
+// Helper function to create theme
+function createTheme(
+  name: string,
+  type: "light" | "dark",
+  colors: {
+    mainColor: string;
+    mainBgcolor: string;
+    color: string;
+    bgcolor: string;
+    selected: string;
+    accentColor: string;
+    rootColor: string;
+    rootBgcolor: string;
+    rootBorderColor: string;
+    panelColor: string;
+    panelBgcolor: string;
+    panelBorderColor: string;
+  },
+  palette: string[]
+): MindElixirTheme {
+  return {
+    name,
+    type,
+    palette,
+    cssVar: {
+      ...commonSpacing,
+      "--main-color": colors.mainColor,
+      "--main-bgcolor": colors.mainBgcolor,
+      "--main-bgcolor-transparent": `${colors.mainBgcolor.replace(")", " / 95%)")}`,
+      "--color": colors.color,
+      "--bgcolor": colors.bgcolor,
+      "--selected": colors.selected,
+      "--accent-color": colors.accentColor,
+      "--root-color": colors.rootColor,
+      "--root-bgcolor": colors.rootBgcolor,
+      "--root-border-color": colors.rootBorderColor,
+      "--panel-color": colors.panelColor,
+      "--panel-bgcolor": colors.panelBgcolor,
+      "--panel-border-color": colors.panelBorderColor,
+    },
+  };
+}
+
+// Shadcn-styled light theme
+const lightTheme: MindElixirTheme = createTheme(
+  "shadcn-light",
+  "light",
+  {
+    mainColor: "oklch(0.145 0 0)",           // foreground
+    mainBgcolor: "oklch(1 0 0)",             // background (white)
+    color: "oklch(0.145 0 0)",               // foreground
+    bgcolor: "oklch(1 0 0)",                 // card background
+    selected: "oklch(0.205 0 0)",            // primary
+    accentColor: "oklch(0.646 0.222 41.116)", // chart-1 (vibrant)
+    rootColor: "oklch(0.985 0 0)",           // primary-foreground
+    rootBgcolor: "oklch(0.205 0 0)",         // primary
+    rootBorderColor: "oklch(0.205 0 0)",     // primary
+    panelColor: "oklch(0.145 0 0)",          // foreground
+    panelBgcolor: "oklch(1 0 0)",            // popover
+    panelBorderColor: "oklch(0.922 0 0)",    // border
+  },
+  [
+    "oklch(0.646 0.222 41.116)", // chart-1: vibrant orange
+    "oklch(0.6 0.118 184.704)",   // chart-2: teal
+    "oklch(0.398 0.07 227.392)",  // chart-3: blue
+    "oklch(0.828 0.189 84.429)",  // chart-4: yellow-green
+    "oklch(0.769 0.188 70.08)",   // chart-5: warm yellow
+    "oklch(0.488 0.243 264.376)", // purple
+    "oklch(0.696 0.17 162.48)",   // mint
+  ]
+);
+
+// Shadcn-styled dark theme
+const darkTheme: MindElixirTheme = createTheme(
+  "shadcn-dark",
+  "dark",
+  {
+    mainColor: "oklch(0.985 0 0)",           // foreground
+    mainBgcolor: "oklch(0.145 0 0)",         // background (dark)
+    color: "oklch(0.985 0 0)",               // foreground
+    bgcolor: "oklch(0.205 0 0)",             // card background
+    selected: "oklch(0.922 0 0)",            // primary
+    accentColor: "oklch(0.488 0.243 264.376)", // chart-1 (purple)
+    rootColor: "oklch(0.205 0 0)",           // primary-foreground
+    rootBgcolor: "oklch(0.922 0 0)",         // primary
+    rootBorderColor: "oklch(0.922 0 0)",     // primary
+    panelColor: "oklch(0.985 0 0)",          // foreground
+    panelBgcolor: "oklch(0.205 0 0)",        // popover
+    panelBorderColor: "oklch(1 0 0 / 10%)",  // border
+  },
+  [
+    "oklch(0.488 0.243 264.376)", // chart-1: purple
+    "oklch(0.696 0.17 162.48)",   // chart-2: mint
+    "oklch(0.769 0.188 70.08)",   // chart-3: warm yellow
+    "oklch(0.627 0.265 303.9)",   // chart-4: pink
+    "oklch(0.645 0.246 16.439)",  // chart-5: coral
+    "oklch(0.646 0.222 41.116)",  // orange
+    "oklch(0.6 0.118 184.704)",   // teal
+  ]
+);
+
+// Monochrome variants
+const lightThemeMonochrome: MindElixirTheme = createTheme(
+  "shadcn-light-mono",
+  "light",
+  {
+    mainColor: "oklch(0.145 0 0)",
+    mainBgcolor: "oklch(1 0 0)",
+    color: "oklch(0.145 0 0)",
+    bgcolor: "oklch(1 0 0)",
+    selected: "oklch(0.205 0 0)",
+    accentColor: "oklch(0.205 0 0)",         // primary
+    rootColor: "oklch(0.985 0 0)",
+    rootBgcolor: "oklch(0.205 0 0)",
+    rootBorderColor: "oklch(0.205 0 0)",
+    panelColor: "oklch(0.145 0 0)",
+    panelBgcolor: "oklch(1 0 0)",
+    panelBorderColor: "oklch(0.922 0 0)",
+  },
+  ["oklch(0.205 0 0)"] // Single primary color
+);
+
+const darkThemeMonochrome: MindElixirTheme = createTheme(
+  "shadcn-dark-mono",
+  "dark",
+  {
+    mainColor: "oklch(0.985 0 0)",
+    mainBgcolor: "oklch(0.145 0 0)",
+    color: "oklch(0.985 0 0)",
+    bgcolor: "oklch(0.205 0 0)",
+    selected: "oklch(0.922 0 0)",
+    accentColor: "oklch(0.922 0 0)",         // primary
+    rootColor: "oklch(0.205 0 0)",
+    rootBgcolor: "oklch(0.922 0 0)",
+    rootBorderColor: "oklch(0.922 0 0)",
+    panelColor: "oklch(0.985 0 0)",
+    panelBgcolor: "oklch(0.205 0 0)",
+    panelBorderColor: "oklch(1 0 0 / 10%)",
+  },
+  ["oklch(0.922 0 0)"] // Single primary color
+)
+
+// Helper function to get the appropriate theme
+function getTheme(isDark: boolean, isMonochrome: boolean): MindElixirTheme {
+  if (isDark) {
+    return isMonochrome ? darkThemeMonochrome : darkTheme;
+  }
+  return isMonochrome ? lightThemeMonochrome : lightTheme;
 }
 
 export function MindMap({
@@ -142,6 +305,7 @@ export function MindMap({
   overflowHidden = false,
   mainLinkStyle = 2,
   theme: themeProp,
+  monochrome = false,
   fit = true,
   onOperation,
   onSelectNodes,
@@ -193,7 +357,7 @@ export function MindMap({
         mainLinkStyle,
         alignment: "nodes",
         theme:
-          resolvedThemeRef.current === "dark" ? MindElixir.DARK_THEME : MindElixir.THEME,
+          getTheme(resolvedThemeRef.current === "dark", monochrome),
       } as Options;
 
       try {
@@ -244,6 +408,7 @@ export function MindMap({
     locale,
     overflowHidden,
     mainLinkStyle,
+    monochrome,
     fit,
     data,
     onOperation,
@@ -257,19 +422,13 @@ export function MindMap({
     }
   }, [data, isLoaded]);
 
-  // Update theme when resolvedTheme changes
+  // Update theme when resolvedTheme or monochrome changes
   useEffect(() => {
     if (!mindRef.current || !isLoaded) return;
 
-    import("mind-elixir").then((MindElixirModule) => {
-      if (!mindRef.current) return;
-      debugger
-      const MindElixir = MindElixirModule.default;
-      const newTheme =
-        resolvedTheme === "dark" ? MindElixir.DARK_THEME : MindElixir.THEME;
-      mindRef.current.changeTheme(newTheme, false);
-    });
-  }, [resolvedTheme, isLoaded]);
+    const newTheme = getTheme(resolvedTheme === "dark", monochrome);
+    mindRef.current.changeTheme(newTheme, false);
+  }, [resolvedTheme, monochrome, isLoaded]);
 
   return (
     <MindMapContext.Provider value={{ mind: mindInstance, isLoaded }}>
