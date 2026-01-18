@@ -5,7 +5,7 @@ import { Copy, Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "site-url-here";
+const siteUrl = "https://mindmapcn.vercel.app";
 
 const installCommand = `npx shadcn@latest add ${siteUrl}/mindmaps/mindmap.json`;
 

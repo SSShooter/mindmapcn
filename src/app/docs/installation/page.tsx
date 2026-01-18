@@ -9,9 +9,9 @@ import { CodeBlock } from "../_components/code-block";
 import { Metadata } from "next";
 import { MindMap, MindMapControls } from "@/registry/mindmap";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mindmap.ssshooter.com";
+const siteUrl = "https://mindmapcn.vercel.app";
 
-const installCode = `npx shadcn@latest add ${siteUrl}/registry/mindmap.json`;
+const installCode = `npx shadcn@latest add ${siteUrl}/mindmaps/mindmap.json`;
 
 const usageCode = `import { MindMap, MindMapControls } from "@/registry/mindmap";
 

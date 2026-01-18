@@ -22,7 +22,7 @@ const initialData: MindElixirData = {
 
 export function BasicMindMapExample() {
   return (
-    <div className="h-[500px] w-full rounded-lg border bg-background overflow-hidden relative">
+    <div className="h-[400px] w-full rounded-lg border bg-background overflow-hidden relative">
       <MindMap data={initialData}>
         <MindMapControls />
       </MindMap>
