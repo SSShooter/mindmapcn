@@ -7,23 +7,19 @@ import {
 } from "../_components/docs";
 import { CodeBlock } from "../_components/code-block";
 import { Metadata } from "next";
-import { Card } from "@/components/ui/card";
-import { Map, MapControls } from "@/registry/map";
+import { MindMap, MindMapControls } from "@/registry/mindmap";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "site-url-here";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mindmap.ssshooter.com";
 
-const installCode = `npx shadcn@latest add ${siteUrl}/maps/map.json`;
+const installCode = `npx shadcn@latest add ${siteUrl}/registry/mindmap.json`;
 
-const usageCode = `import { Map, MapControls } from "@/components/ui/map";
-import { Card } from "@/components/ui/card";
+const usageCode = `import { MindMap, MindMapControls } from "@/registry/mindmap";
 
-export function MyMap() {
+export function MyMindMap() {
   return (
-    <Card className="h-[300px] p-0 overflow-hidden">
-      <Map center={[-74.006, 40.7128]} zoom={11}>
-        <MapControls />
-      </Map>
-    </Card>
+    <div className="h-[500px] w-full border rounded-lg overflow-hidden relative">
+      <MindMap />
+    </div>
   );
 }`;
 
@@ -37,7 +33,7 @@ export default function InstallationPage() {
       title="Installation"
       description="How to install and set up mindmapcn in your project."
       prev={{ title: "Introduction", href: "/docs" }}
-      next={{ title: "API Reference", href: "/docs/api-reference" }}
+      next={{ title: "Usage", href: "/docs/usage" }}
     >
       <DocsSection title="Prerequisites">
         <p>
@@ -54,28 +50,27 @@ export default function InstallationPage() {
       </DocsSection>
 
       <DocsSection title="Installation">
-        <p>Run the following command to add the map component:</p>
+        <p>Run the following command to add the mind map component:</p>
         <CodeBlock code={installCode} language="bash" />
         <p>
-          This will install <DocsCode>maplibre-gl</DocsCode> and add the map
+          This will install <DocsCode>mind-elixir</DocsCode> and add the MindMap
           component to your project.
         </p>
       </DocsSection>
 
       <DocsSection title="Usage">
-        <p>Import and use the map component:</p>
+        <p>Import and use the MindMap component:</p>
         <CodeBlock code={usageCode} />
-        <Card className="h-[300px] p-0 overflow-hidden rounded-lg">
-          <Map center={[-74.006, 40.7128]} zoom={11}>
-            <MapControls />
-          </Map>
-        </Card>
+        <div className="h-[300px] w-full border rounded-lg overflow-hidden relative bg-background">
+          <MindMap fit={true}>
+            <MindMapControls />
+          </MindMap>
+        </div>
       </DocsSection>
 
       <DocsNote>
-        <strong>Note:</strong> The map uses free CARTO basemap tiles by default.
-        No API key required. Tiles automatically switch between light and dark
-        themes.
+        <strong>Note:</strong> The mind map uses <code>oklch</code> colors for accessibility and theme support.
+        It automatically switches between light and dark themes.
       </DocsNote>
     </DocsLayout>
   );

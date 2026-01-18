@@ -3,16 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Map,
   BookOpen,
   Code,
   Braces,
-  MapPin,
-  MessageSquare,
-  Route,
-  Wrench,
-  Settings,
-  Layers,
+  Map,
 } from "lucide-react";
 
 import {
@@ -32,8 +26,9 @@ const navigation = [
   {
     title: "Basics",
     items: [
-      { title: "Getting Started", href: "/docs", icon: BookOpen },
+      { title: "Introduction", href: "/docs", icon: BookOpen },
       { title: "Installation", href: "/docs/installation", icon: Code },
+      { title: "Usage", href: "/docs/usage", icon: Map },
       {
         title: "API Reference",
         href: "/docs/api-reference",
@@ -41,18 +36,12 @@ const navigation = [
       },
     ],
   },
-  {
-    title: "Examples",
-    items: [
-      { title: "Basic Map", href: "/docs/basic-map", icon: Map },
-      { title: "Map Controls", href: "/docs/controls", icon: Settings },
-      { title: "Markers", href: "/docs/markers", icon: MapPin },
-      { title: "Popups", href: "/docs/popups", icon: MessageSquare },
-      { title: "Routes", href: "/docs/routes", icon: Route },
-      { title: "Clusters", href: "/docs/clusters", icon: Layers },
-      { title: "Advanced Usage", href: "/docs/advanced-usage", icon: Wrench },
-    ],
-  },
+  // {
+  //   title: "Examples",
+  //   items: [
+  //     { title: "Basic MindMap", href: "/docs/usage", icon: Map },
+  //   ],
+  // },
 ];
 
 export function DocsSidebar() {

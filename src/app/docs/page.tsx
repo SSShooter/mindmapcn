@@ -7,17 +7,17 @@ const features = [
     icon: Zap,
     title: "Zero Config",
     description:
-      "Works out of the box with free map tiles. No API keys required.",
+      "Works out of the box with reasonable defaults. No complex setup required.",
   },
   {
     icon: Moon,
     title: "Theme Aware",
-    description: "Automatically adapts to light and dark mode.",
+    description: "Automatically adapts to light and dark mode with Shadcn UI integration.",
   },
   {
     icon: Puzzle,
     title: "Composable",
-    description: "Build complex UIs with simple, composable components.",
+    description: "Built as a React component, easy to integrate and extend.",
   },
   {
     icon: Code,
@@ -34,16 +34,16 @@ export default function IntroductionPage() {
   return (
     <DocsLayout
       title="Introduction"
-      description="Beautiful, accessible map components."
+      description="Beautiful, accessible mind map components."
       next={{ title: "Installation", href: "/docs/installation" }}
     >
       <DocsSection>
         <p>
           <strong className="text-foreground">mindmapcn</strong> provides
-          beautifully designed, accessible, and customizable map components.
+          beautifully designed, accessible, and customizable mind map components.
           Built on{" "}
-          <DocsLink href="https://maplibre.org" external>
-            MapLibre GL
+          <DocsLink href="https://github.com/ssshooter/mind-elixir-core" external>
+            Mind Elixir
           </DocsLink>
           , styled with{" "}
           <DocsLink href="https://tailwindcss.com" external>
@@ -59,10 +59,8 @@ export default function IntroductionPage() {
 
       <DocsSection title="Why mindmapcn?">
         <p>
-          There&apos;s no proper copy-paste, easy-to-use map integration for
-          React. Most solutions require complex configurations, API keys, or
-          heavy wrapper libraries. mindmapcn gives you beautiful maps with a single
-          command.
+          Integrating a mind map into a React application usually involves complex wrappers or outdated libraries.
+          mindmapcn gives you a modern, beautiful, and fully typed Mind Map component that fits perfectly into your shadcn/ui based application.
         </p>
       </DocsSection>
 
