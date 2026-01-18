@@ -1,7 +1,6 @@
 "use client";
 
 import "mind-elixir/style.css";
-import { useTheme } from "next-themes";
 import {
   createContext,
   useCallback,
@@ -16,6 +15,63 @@ import { Minus, Plus, Download, Maximize2, Loader2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { MindElixirInstance, NodeObj, Options } from "mind-elixir";
+
+// Check document class for theme (works with next-themes, etc.)
+function getDocumentTheme(): Theme | null {
+  if (typeof document === "undefined") return null;
+  if (document.documentElement.classList.contains("dark")) return "dark";
+  if (document.documentElement.classList.contains("light")) return "light";
+  return null;
+}
+
+// Get system preference
+function getSystemTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function useResolvedTheme(themeProp?: "light" | "dark"): "light" | "dark" {
+  const [detectedTheme, setDetectedTheme] = useState<"light" | "dark">(
+    () => getDocumentTheme() ?? getSystemTheme(),
+  );
+
+  useEffect(() => {
+    if (themeProp) return; // Skip detection if theme is provided via prop
+
+    // Watch for document class changes (e.g., next-themes toggling dark class)
+    const observer = new MutationObserver(() => {
+      const docTheme = getDocumentTheme();
+      if (docTheme) {
+        setDetectedTheme(docTheme);
+      }
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    // Also watch for system preference changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemChange = (e: MediaQueryListEvent) => {
+      // Only use system preference if no document class is set
+      if (!getDocumentTheme()) {
+        setDetectedTheme(e.matches ? "dark" : "light");
+      }
+    };
+    mediaQuery.addEventListener("change", handleSystemChange);
+
+    return () => {
+      observer.disconnect();
+      mediaQuery.removeEventListener("change", handleSystemChange);
+    };
+  }, [themeProp]);
+
+  return themeProp ?? detectedTheme;
+}
+
+type Theme = "light" | "dark";
 
 // Context for MindMap
 interface MindMapContextValue {
@@ -85,7 +141,7 @@ export function MindMap({
   locale = "en",
   overflowHidden = false,
   mainLinkStyle = 2,
-  theme: mindTheme = "dark",
+  theme: themeProp,
   fit = true,
   onOperation,
   onSelectNodes,
@@ -94,10 +150,18 @@ export function MindMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mindRef = useRef<MindElixirInstance | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [mindInstance, setMindInstance] = useState<MindElixirInstance | null>(null);
+  const [mindInstance, setMindInstance] = useState<MindElixirInstance | null>(
+    null,
+  );
   const [isMounted, setIsMounted] = useState(false);
-  const { resolvedTheme } = useTheme();
+  const resolvedTheme = useResolvedTheme(themeProp);
   const id = useId();
+  
+  // Store resolvedTheme in a ref for use in effects without triggering re-runs
+  const resolvedThemeRef = useRef(resolvedTheme);
+  useEffect(() => {
+    resolvedThemeRef.current = resolvedTheme;
+  }, [resolvedTheme]);
 
   // Ensure component only renders on client
   useEffect(() => {
@@ -127,8 +191,9 @@ export function MindMap({
         locale,
         overflowHidden,
         mainLinkStyle,
-        alignment: 'nodes',
-        theme: mindTheme === 'dark' ? MindElixir.DARK_THEME : MindElixir.THEME
+        alignment: "nodes",
+        theme:
+          resolvedThemeRef.current === "dark" ? MindElixir.DARK_THEME : MindElixir.THEME,
       } as Options;
 
       try {
@@ -145,9 +210,7 @@ export function MindMap({
 
           // Auto-fit if enabled
           if (fit) {
-            setTimeout(() => {
-              mind.scaleFit();
-            }, 10);
+            mind.scaleFit();
           }
 
           // Event listeners
@@ -181,7 +244,6 @@ export function MindMap({
     locale,
     overflowHidden,
     mainLinkStyle,
-    mindTheme,
     fit,
     data,
     onOperation,
@@ -201,13 +263,13 @@ export function MindMap({
 
     import("mind-elixir").then((MindElixirModule) => {
       if (!mindRef.current) return;
+      debugger
       const MindElixir = MindElixirModule.default;
-      const newTheme = resolvedTheme === 'dark' ? MindElixir.DARK_THEME : MindElixir.THEME;
-      mindRef.current.changeTheme(newTheme);
+      const newTheme =
+        resolvedTheme === "dark" ? MindElixir.DARK_THEME : MindElixir.THEME;
+      mindRef.current.changeTheme(newTheme, false);
     });
   }, [resolvedTheme, isLoaded]);
-
-
 
   return (
     <MindMapContext.Provider value={{ mind: mindInstance, isLoaded }}>
@@ -217,7 +279,7 @@ export function MindMap({
         id={`mindmap-${id}`}
         className={cn(
           "relative w-full h-full bg-background rounded-lg overflow-hidden",
-          className
+          className,
         )}
       ></div>
       {!isMounted || !isLoaded ? loader || <DefaultLoader /> : null}
@@ -305,7 +367,7 @@ export function MindMapControls({
       className={cn(
         "absolute z-10 flex flex-col gap-1",
         positionClasses[position],
-        className
+        className,
       )}
     >
       {showZoom && (
