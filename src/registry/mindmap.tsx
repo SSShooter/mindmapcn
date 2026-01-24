@@ -449,17 +449,16 @@ export function MindMap({
 
   return (
     <MindMapContext.Provider value={{ mind: mindInstance, isLoaded }}>
-      <div
-        key={id}
-        ref={containerRef}
-        id={`mindmap-${id}`}
-        className={cn(
-          "relative w-full h-full bg-background rounded-lg overflow-hidden",
-          className,
-        )}
-      ></div>
-      {!isMounted || !isLoaded ? loader || <DefaultLoader /> : null}
-      {children}
+      <div className={cn("relative w-full h-full", className)}>
+        <div
+          key={id}
+          ref={containerRef}
+          id={`mindmap-${id}`}
+          className="w-full h-full bg-background rounded-lg overflow-hidden"
+        />
+        {!isMounted || !isLoaded ? loader || <DefaultLoader /> : null}
+        {children}
+      </div>
     </MindMapContext.Provider>
   );
 }
