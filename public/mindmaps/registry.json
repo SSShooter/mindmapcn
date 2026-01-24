@@ -8,7 +8,7 @@
       "type": "registry:ui",
       "title": "MindMap",
       "description": "A MindElixir-powered map component with markers, popups, tooltips, routes, and controls.",
-      "dependencies": ["mind-elixir", "next-themes", "lucide-react"],
+      "dependencies": ["mind-elixir", "lucide-react", "@zumer/snapdom"],
       "registryDependencies": [],
       "files": [
         {
@@ -17,16 +17,7 @@
           "target": "components/ui/mindmap.tsx"
         }
       ],
-      "css": {
-        "@layer base": {
-          ".mindelixir-popup-content": {
-             "@apply bg-transparent! shadow-none! p-0! rounded-none!": {}
-          },
-          ".mindelixir-popup-tip": {
-            "@apply hidden!": {}
-          }
-        }
-      }
+      "css": {}
     }
   ]
 }
