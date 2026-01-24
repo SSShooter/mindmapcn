@@ -8,6 +8,8 @@ import {
   useId,
   useRef,
   useState,
+  forwardRef,
+  useImperativeHandle,
   type ReactNode,
 } from "react";
 import { Minus, Plus, Download, Loader2, Maximize, ScanSearch } from "lucide-react";
@@ -91,6 +93,11 @@ export function useMindMap() {
 
 // MindMap Props
 type MindMapData = MindElixirData;
+
+// Ref type to expose MindElixir instance to parent components
+export interface MindMapRef {
+  instance: MindElixirInstance | null;
+}
 
 interface MindMapProps {
   children?: ReactNode;
@@ -273,7 +280,7 @@ function getTheme(isDark: boolean, isMonochrome: boolean): MindElixirTheme {
   return isMonochrome ? lightThemeMonochrome : lightTheme;
 }
 
-export function MindMap({
+export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap({
   children,
   data,
   className,
@@ -293,7 +300,7 @@ export function MindMap({
   onOperation,
   onSelectNodes,
   loader,
-}: MindMapProps) {
+}: MindMapProps, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindRef = useRef<MindElixirInstance | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -303,6 +310,11 @@ export function MindMap({
   const [isMounted, setIsMounted] = useState(false);
   const resolvedTheme = useResolvedTheme(themeProp);
   const id = useId();
+  
+  // Expose mind instance to parent component via ref
+  useImperativeHandle(ref, () => ({
+    instance: mindRef.current,
+  }), []);
   
   // Store resolvedTheme in a ref for use in effects without triggering re-runs
   const resolvedThemeRef = useRef(resolvedTheme);
@@ -461,7 +473,7 @@ export function MindMap({
       </div>
     </MindMapContext.Provider>
   );
-}
+});
 
 // MindMap Controls
 interface MindMapControlsProps {
