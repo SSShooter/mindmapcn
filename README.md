@@ -24,7 +24,6 @@
 - 🎯 **Zero config** — Works out of the box with sensible defaults
 - 📦 **shadcn/ui compatible** — Uses the same patterns and styling conventions
 - 🧠 **Mind Elixir powered** — Full access to [Mind Elixir](https://github.com/SSShooter/mind-elixir-core)'s powerful mind mapping capabilities
-- 🧩 **Composable** — Build complex mind map UIs with simple, declarative components
 - 🎮 **Controls** — Zoom, fit to screen, and export controls
 - 📊 **Versatile** — Perfect for organizational charts, project planning, knowledge graphs, brainstorming, and more
 - 🎨 **Customizable** — Rich styling options with tags, icons, colors, and hyperlinks
