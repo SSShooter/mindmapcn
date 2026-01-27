@@ -1,4 +1,4 @@
-import { MapPin } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 import Link from "next/link";
 
 import { Separator } from "@/components/ui/separator";
@@ -21,7 +21,7 @@ export function Header({ className, leftContent }: HeaderProps) {
             href="/"
             className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
           >
-            <MapPin className="size-4" />
+            <img src="icon.png" alt="mindmapcn icon" className="size-6" />
             <span className="font-semibold tracking-tight">mindmapcn</span>
           </Link>
         </div>

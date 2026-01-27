@@ -12,7 +12,7 @@
   <p>
     <a href="https://mindmapcn.vercel.app">Get Started</a> •
     <a href="https://mindmapcn.vercel.app/docs/installation">Installation</a> •
-    <a href="https://mindmapcn.vercel.app/docs/basic-mindmap">Examples</a>
+    <a href="https://mindmapcn.vercel.app/docs/usage">Examples</a>
   </p>
 </div>
 
