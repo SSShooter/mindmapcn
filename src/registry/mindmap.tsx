@@ -16,7 +16,7 @@ import { Minus, Plus, Download, Loader2, Maximize, ScanSearch } from "lucide-rea
 
 import { cn } from "@/lib/utils";
 import { type MindElixirInstance, type MindElixirData, type NodeObj, type Options, type Theme as MindElixirTheme } from "mind-elixir";
-import { snapdom } from "@zumer/snapdom";
+import { snapdom, SnapdomOptions } from "@zumer/snapdom";
 
 // Check document class for theme (works with next-themes, etc.)
 function getDocumentTheme(): Theme | null {
@@ -480,7 +480,7 @@ interface MindMapControlsProps {
   showFit?: boolean;
   showExport?: boolean;
   className?: string;
-  onExport?: (type: "png" | "svg" | "json") => void;
+  onExport?: (file: Blob, filename: string) => void;
 }
 
 export function MindMapControls({
@@ -525,11 +525,24 @@ export function MindMapControls({
       try {
         // Export as image using snapdom
         const result = await snapdom(mind.nodes);
-        await result.download({ type: "jpg", filename: "mindmap" });
+        // Use root node's topic as filename
+        const rootTopic = mind.nodeData.topic || "mindmap";
+        const filename = `${rootTopic}.jpg`;
+        const options = {
+          type: "jpg",
+          filename: rootTopic,
+          quality: 1,
+          backgroundColor: mind.theme.cssVar['--bgcolor'],
+        } as SnapdomOptions;
         
+        // Get the blob for the callback
         if (onExport) {
-          onExport("png");
+          const blob = await result.toBlob(options);
+          onExport(blob, filename);
         }
+        
+        // Download the file
+        await result.download(options);
       } catch (error) {
         console.error("Failed to export mind map:", error);
       }
