@@ -372,6 +372,12 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
 
       const MindElixir = MindElixirModule.default;
 
+      // Prioritize theme from data, then fall back to component props
+      const initialData = initialDataRef.current || MindElixir.new("Mind Map");
+      const themeToUse =
+        initialData.theme ||
+        getTheme(resolvedThemeRef.current === "dark", monochrome);
+
       const options = {
         el: containerRef.current,
         direction,
@@ -384,15 +390,11 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
         mainLinkStyle,
         editable: !readonly,
         alignment: "nodes",
-        theme: getTheme(resolvedThemeRef.current === "dark", monochrome),
+        theme: themeToUse,
       } as Options;
 
       try {
         const mind = new MindElixir(options);
-
-        // Initialize with initial data from ref (not reactive to data prop changes)
-        const initialData =
-          initialDataRef.current || MindElixir.new("Mind Map");
         mind.init(initialData);
 
         if (isSubscribed) {
@@ -470,9 +472,18 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
   }, [data, isLoaded]);
 
   // Update theme when resolvedTheme or monochrome changes
+  // BUT only if the data itself doesn't have a theme (data.theme has highest priority)
   useEffect(() => {
     if (!mindRef.current || !isLoaded) return;
 
+    // Check if current data has its own theme
+    const currentData = mindRef.current.getData();
+    if (currentData.theme) {
+      // Data has its own theme, don't override it with prop changes
+      return;
+    }
+
+    // No theme in data, apply theme from props
     const newTheme = getTheme(resolvedTheme === "dark", monochrome);
     mindRef.current.changeTheme(newTheme);
   }, [resolvedTheme, monochrome, isLoaded]);
