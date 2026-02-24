@@ -11,6 +11,7 @@ import {
   forwardRef,
   useImperativeHandle,
   type ReactNode,
+  useLayoutEffect,
 } from "react";
 import {
   Minus,
@@ -29,6 +30,7 @@ import {
   type Options,
   type Theme as MindElixirTheme,
 } from "mind-elixir";
+import MindElixir from "mind-elixir";
 import { snapdom, SnapdomOptions } from "@zumer/snapdom";
 
 // Check document class for theme (works with next-themes, etc.)
@@ -322,7 +324,6 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
   const [mindInstance, setMindInstance] = useState<MindElixirInstance | null>(
     null,
   );
-  const [isMounted, setIsMounted] = useState(false);
   const resolvedTheme = useResolvedTheme(themeProp);
   const id = useId();
 
@@ -352,88 +353,79 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
     onSelectNodesRef.current = onSelectNodes;
   }, [onChange, onOperation, onSelectNodes]);
 
+  // Track internal changes to avoid refresh loops
+  const isInternalChangeRef = useRef(false);
+
   // Store initial data in ref - only used for initialization, not reactive
   const initialDataRef = useRef(data);
 
-  // Ensure component only renders on client
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   // Initialize MindElixir (client-side only)
-  useEffect(() => {
-    if (!isMounted || !containerRef.current || mindRef.current) return;
+  useLayoutEffect(() => {
+    if (!containerRef.current || mindRef.current) return;
 
     let isSubscribed = true;
 
-    // Dynamic import to avoid SSR issues
-    import("mind-elixir").then((MindElixirModule) => {
-      if (!isSubscribed || !containerRef.current) return;
+    // Prioritize theme from data, then fall back to component props
+    const initialData = initialDataRef.current || MindElixir.new("Mind Map");
+    const themeToUse =
+      initialData.theme ||
+      getTheme(resolvedThemeRef.current === "dark", monochrome);
 
-      const MindElixir = MindElixirModule.default;
+    const options = {
+      el: containerRef.current,
+      direction,
+      contextMenu,
+      toolBar: false,
+      nodeMenu,
+      keypress,
+      locale,
+      overflowHidden,
+      mainLinkStyle,
+      editable: !readonly,
+      alignment: "nodes",
+      theme: themeToUse,
+    } as Options;
 
-      // Prioritize theme from data, then fall back to component props
-      const initialData = initialDataRef.current || MindElixir.new("Mind Map");
-      const themeToUse =
-        initialData.theme ||
-        getTheme(resolvedThemeRef.current === "dark", monochrome);
+    try {
+      const mind = new MindElixir(options);
+      mind.init(initialData);
 
-      const options = {
-        el: containerRef.current,
-        direction,
-        contextMenu,
-        toolBar: false,
-        nodeMenu,
-        keypress,
-        locale,
-        overflowHidden,
-        mainLinkStyle,
-        editable: !readonly,
-        alignment: "nodes",
-        theme: themeToUse,
-      } as Options;
+      if (isSubscribed) {
+        mindRef.current = mind;
+        setMindInstance(mind);
+        setIsLoaded(true);
 
-      try {
-        const mind = new MindElixir(options);
-        mind.init(initialData);
-
-        if (isSubscribed) {
-          mindRef.current = mind;
-          setMindInstance(mind);
-          setIsLoaded(true);
-
-          // Auto-fit if enabled
-          if (fit) {
-            mind.scaleFit();
-          }
-
-          // Event listeners (using refs to avoid re-initialization)
-          mind.bus.addListener("operation", (operation) => {
-            console.log(operation);
-
-            // Call onOperation if provided
-            if (onOperationRef.current) {
-              onOperationRef.current(operation);
-            }
-            // Call onChange if provided
-            if (onChangeRef.current) {
-              const updatedData = mind.getData();
-              // Mark this as an internal change to prevent refresh loop
-              isInternalChangeRef.current = true;
-              onChangeRef.current(updatedData, operation);
-            }
-          });
-
-          if (onSelectNodesRef.current) {
-            mind.bus.addListener("selectNodes", (nodeObj) => {
-              onSelectNodesRef.current?.(nodeObj);
-            });
-          }
+        // Auto-fit if enabled
+        if (fit) {
+          mind.scaleFit();
         }
-      } catch (error) {
-        console.error("Failed to initialize MindElixir:", error);
+
+        // Event listeners (using refs to avoid re-initialization)
+        mind.bus.addListener("operation", (operation) => {
+          console.log(operation);
+
+          // Call onOperation if provided
+          if (onOperationRef.current) {
+            onOperationRef.current(operation);
+          }
+          // Call onChange if provided
+          if (onChangeRef.current) {
+            const updatedData = mind.getData();
+            // Mark this as an internal change to prevent refresh loop
+            isInternalChangeRef.current = true;
+            onChangeRef.current(updatedData, operation);
+          }
+        });
+
+        if (onSelectNodesRef.current) {
+          mind.bus.addListener("selectNodes", (nodeObj) => {
+            onSelectNodesRef.current?.(nodeObj);
+          });
+        }
       }
-    });
+    } catch (error) {
+      console.error("Failed to initialize MindElixir:", error);
+    }
 
     return () => {
       isSubscribed = false;
@@ -443,7 +435,6 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
       mindRef.current = null;
     };
   }, [
-    isMounted,
     direction,
     contextMenu,
     nodeMenu,
@@ -455,9 +446,6 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
     readonly,
     fit,
   ]);
-
-  // Track internal changes to avoid refresh loops
-  const isInternalChangeRef = useRef(false);
 
   // Update data when it changes
   useEffect(() => {
@@ -497,7 +485,7 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
           id={`mindmap-${id}`}
           className="w-full h-full bg-background rounded-lg overflow-hidden"
         />
-        {!isMounted || !isLoaded ? loader || <DefaultLoader /> : null}
+        {!isLoaded ? loader || <DefaultLoader /> : null}
         {children}
       </div>
     </MindMapContext.Provider>
