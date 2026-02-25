@@ -11,7 +11,6 @@ import {
   forwardRef,
   useImperativeHandle,
   type ReactNode,
-  useLayoutEffect,
 } from "react";
 import {
   Minus,
@@ -360,7 +359,7 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
   const initialDataRef = useRef(data);
 
   // Initialize MindElixir (client-side only)
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!containerRef.current || mindRef.current) return;
 
     let isSubscribed = true;
