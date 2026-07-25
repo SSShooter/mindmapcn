@@ -32,7 +32,7 @@ export default function UsagePage() {
       title="Usage"
       description="The simplest way to add an interactive mind map to your application."
       prev={{ title: "Installation", href: "/docs/installation" }}
-      next={{ title: "Data Structure", href: "/docs/data-structure" }}
+      next={{ title: "Plaintext Format", href: "/docs/plaintext" }}
     >
       <DocsSection>
         <p>

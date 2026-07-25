@@ -71,6 +71,7 @@ function createUsageGuidanceMarkdown() {
 - Use ${code("direction")}: ${code("0")} left, ${code("1")} right, ${code("2")} both/side (default).
 - Use ${code("theme")} only to force light/dark; omit it to follow the document / system theme (works with next-themes).
 - Use ${code("markdown")} when node topics need rich text — pass a custom parser (for example marked); do not assume a built-in markdown engine.
+- The ${code("data")} prop accepts either a ${code("MindElixirData")} object or a Mind Elixir plaintext string (2-space indented outline); strings are parsed automatically via ${code("plaintextToMindElixir")}. The plaintext format is convenient for AI generation and streaming.
 - Use ${code("imageProxy")} only when export fails due to CORS on remote node images; it is not required for on-screen display.
 - For the full instance API (methods, events, advanced options), use ${code("useMindMap().mind")} and see Mind Elixir docs: https://github.com/ssshooter/mind-elixir-core
 `;
@@ -171,6 +172,7 @@ ${components.map((item) => `- [${item.title}](${item.href}) - ${item.description
 - [Introduction](/docs) - Project overview and presentation-first philosophy
 - [Installation](/docs/installation) - Install command and first example
 - [Usage](/docs/usage) - Readonly, onChange, direction, theme, markdown, compact, imageProxy
+- [Plaintext Format](/docs/plaintext) - Pass an indentation-based outline string to ${code("data")}
 - [Data Structure](/docs/data-structure) - Shape of ${code("MindElixirData")} / ${code("nodeData")}
 - [API Reference](/docs/api-reference) - Component props and ${code("useMindMap")}
 

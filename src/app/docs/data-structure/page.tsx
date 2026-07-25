@@ -76,7 +76,7 @@ export default function DataStructurePage() {
     <DocsLayout
       title="Data Structure"
       description="Shape of the data you pass to MindMap via the data prop."
-      prev={{ title: "Usage", href: "/docs/usage" }}
+      prev={{ title: "Plaintext Format", href: "/docs/plaintext" }}
       next={{ title: "API Reference", href: "/docs/api-reference" }}
     >
       <DocsSection>
@@ -84,7 +84,8 @@ export default function DataStructurePage() {
           Pass a <DocsCode>MindElixirData</DocsCode> object to{" "}
           <DocsCode>data</DocsCode>. The type comes from{" "}
           <DocsCode>mind-elixir</DocsCode>; mindmapcn does not invent a separate
-          schema.
+          schema. Prefer authoring an outline instead? <DocsCode>data</DocsCode>{" "}
+          also accepts a <DocsLink href="/docs/plaintext">plaintext string</DocsLink>.
         </p>
       </DocsSection>
 

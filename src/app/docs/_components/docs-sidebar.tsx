@@ -9,6 +9,7 @@ import {
   Map,
   Database,
   Bot,
+  FileText,
 } from "lucide-react";
 
 import {
@@ -32,6 +33,11 @@ const navigation = [
       { title: "Installation", href: "/docs/installation", icon: Code },
       { title: "llms.txt", href: "/llms.txt", icon: Bot },
       { title: "Usage", href: "/docs/usage", icon: Map },
+      {
+        title: "Plaintext Format",
+        href: "/docs/plaintext",
+        icon: FileText,
+      },
       {
         title: "Data Structure",
         href: "/docs/data-structure",

@@ -30,6 +30,7 @@ import {
   type Theme as MindElixirTheme,
 } from "mind-elixir";
 import MindElixir from "mind-elixir";
+import { plaintextToMindElixir } from "mind-elixir/plaintextConverter";
 import { snapdom, SnapdomOptions } from "@zumer/snapdom";
 
 /** Custom markdown parser — same signature as Mind Elixir `Options.markdown`. */
@@ -111,6 +112,20 @@ export function useMindMap() {
 // MindMap Props
 type MindMapData = MindElixirData;
 
+/**
+ * Accepted data input for the MindMap component.
+ * Either a `MindElixirData` object or a Mind Elixir plaintext string
+ * (indentation-based outline that is parsed via `plaintextToMindElixir`).
+ */
+export type MindMapInput = MindElixirData | string;
+
+/** Normalize accepted input (object or plaintext string) to MindElixirData. */
+function toData(input: MindMapInput | undefined): MindElixirData | undefined {
+  if (input == null) return undefined;
+  if (typeof input === "string") return plaintextToMindElixir(input);
+  return input;
+}
+
 // Ref type to expose MindElixir instance to parent components
 export interface MindMapRef {
   instance: MindElixirInstance | null;
@@ -118,7 +133,11 @@ export interface MindMapRef {
 
 interface MindMapProps {
   children?: ReactNode;
-  data?: MindMapData;
+  /**
+   * Map data. Accepts a `MindElixirData` object or a Mind Elixir plaintext
+   * string (indentation-based outline).
+   */
+  data?: MindMapInput;
   className?: string;
   direction?: 0 | 1 | 2;
   contextMenu?: boolean;
@@ -388,7 +407,8 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
     let isSubscribed = true;
 
     // Prioritize theme from data, then fall back to component props
-    const initialData = initialDataRef.current || MindElixir.new("Mind Map");
+    const initialData =
+      toData(initialDataRef.current) || MindElixir.new("Mind Map");
     const themeToUse =
       initialData.theme ||
       getTheme(resolvedThemeRef.current === "dark", monochrome);
@@ -478,17 +498,22 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
         isInternalChangeRef.current = false;
         return;
       }
-      mindRef.current.refresh(data);
+      const next = toData(data);
+      if (next) {
+        mindRef.current.refresh(next);
+      }
     }
   }, [data, isLoaded]);
 
   // Update theme when resolvedTheme or monochrome changes
   // BUT only if the data itself doesn't have a theme (data.theme has highest priority)
+  // Plaintext strings never carry a theme, so only object data is checked.
+  const dataTheme = typeof data === "object" ? data?.theme : undefined;
   useEffect(() => {
     if (!mindRef.current || !isLoaded) return;
 
     // Check if the provided data prop has its own theme
-    if (data?.theme) {
+    if (dataTheme) {
       // Data has its own theme, don't override it with prop changes
       return;
     }
@@ -496,7 +521,7 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
     // No theme in data, apply theme from props
     const newTheme = getTheme(resolvedTheme === "dark", monochrome);
     mindRef.current.changeTheme(newTheme);
-  }, [resolvedTheme, monochrome, isLoaded, data?.theme]);
+  }, [resolvedTheme, monochrome, isLoaded, dataTheme]);
 
   // Update compact mode when prop changes (after init)
   const compactInitializedRef = useRef(false);
