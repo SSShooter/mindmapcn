@@ -17,6 +17,14 @@ export function Footer() {
         </span>
         <div className="flex items-center gap-4">
           <a
+            href="https://mindmapcn-svelte.mind-elixir.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            Svelte Version
+          </a>
+          <a
             href="https://github.com/ssshooter/mindmapcn"
             target="_blank"
             rel="noopener noreferrer"
