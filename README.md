@@ -45,7 +45,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 - [shadcn/ui](https://github.com/shadcn-ui/ui)
 - [mapcn](https://github.com/AnmolSaini16/mapcn)
-- [@zumer/snapdom](https://github.com/zumerlab/snapdom)
+- [@mind-elixir/export-mindmap](https://github.com/mind-elixir/plugins)
 
 ## License
 

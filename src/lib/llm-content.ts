@@ -126,7 +126,7 @@ Run:
 ${mindmapInstallCommand}
 \`\`\`
 
-This installs ${code("mind-elixir")}, ${code("lucide-react")}, and ${code("@zumer/snapdom")}, and copies the component to ${code("components/ui/mindmap.tsx")} by default.
+This installs ${code("mind-elixir")}, ${code("lucide-react")}, and ${code("@mind-elixir/export-mindmap")}, and copies the component to ${code("components/ui/mindmap.tsx")} by default.
 
 Then import from ${code("@/components/ui/mindmap")}:
 

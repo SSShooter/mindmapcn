@@ -31,7 +31,7 @@ import {
 } from "mind-elixir";
 import MindElixir from "mind-elixir";
 import { plaintextToMindElixir } from "mind-elixir/plaintextConverter";
-import { snapdom, SnapdomOptions } from "@zumer/snapdom";
+import { domToBlob } from "@mind-elixir/export-mindmap";
 
 /** Custom markdown parser — same signature as Mind Elixir `Options.markdown`. */
 export type MindMapMarkdownParser = NonNullable<Options["markdown"]>;
@@ -620,26 +620,27 @@ export function MindMapControls({
   const handleExport = async () => {
     if (mind) {
       try {
-        // Export as image using snapdom
-        const result = await snapdom(mind.nodes);
+        // Export as image using the SCST engine
+        const blob = await domToBlob(mind.nodes, "jpeg", {
+          quality: 1,
+          backgroundColor: mind.theme.cssVar["--bgcolor"],
+        });
         // Use root node's topic as filename
         const rootTopic = mind.nodeData.topic || "mindmap";
         const filename = `${rootTopic}.jpg`;
-        const options = {
-          type: "jpg",
-          filename: rootTopic,
-          quality: 1,
-          backgroundColor: mind.theme.cssVar["--bgcolor"],
-        } as SnapdomOptions;
 
-        // Get the blob for the callback
+        // Provide the blob to the callback
         if (onExport) {
-          const blob = await result.toBlob(options);
           onExport(blob, filename);
         }
 
         // Download the file
-        await result.download(options);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = filename;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
       } catch (error) {
         console.error("Failed to export mind map:", error);
       }

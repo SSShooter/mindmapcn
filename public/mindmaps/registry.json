@@ -8,7 +8,7 @@
       "type": "registry:ui",
       "title": "MindMap",
       "description": "A Mind Elixir-powered mind map component with theme-aware styling, controls, and presentation-first defaults.",
-      "dependencies": ["mind-elixir", "lucide-react", "@zumer/snapdom"],
+      "dependencies": ["mind-elixir", "lucide-react", "@mind-elixir/export-mindmap"],
       "registryDependencies": [],
       "files": [
         {
