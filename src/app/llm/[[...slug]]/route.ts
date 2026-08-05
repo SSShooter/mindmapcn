@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { NextResponse, type NextRequest } from "next/server";
 
 import {
-  createLlmIndexMarkdown,
   createLlmItemMarkdown,
   getRegistryItem,
   getRegistryItemNames,
@@ -10,7 +9,7 @@ import {
 
 export const revalidate = false;
 export const dynamic = "force-static";
-export const dynamicParams = true;
+export const dynamicParams = false;
 
 export async function GET(
   _req: NextRequest,
@@ -20,11 +19,7 @@ export async function GET(
   const itemName = slug?.[0];
 
   if (!itemName) {
-    return new NextResponse(createLlmIndexMarkdown(), {
-      headers: {
-        "Content-Type": "text/markdown; charset=utf-8",
-      },
-    });
+    notFound();
   }
 
   const item = getRegistryItem(itemName);
@@ -41,5 +36,5 @@ export async function GET(
 }
 
 export function generateStaticParams() {
-  return [{}, ...getRegistryItemNames().map((name) => ({ slug: [name] }))];
+  return getRegistryItemNames().map((name) => ({ slug: [name] }));
 }

@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 import { siteUrl } from "@/lib/llm-prompts";
 
 export default function robots(): MetadataRoute.Robots {
