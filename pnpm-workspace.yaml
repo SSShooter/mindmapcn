@@ -5,4 +5,4 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 minimumReleaseAgeExclude:
-  - '@mind-elixir/export-mindmap@0.1.6'
+  - '@mind-elixir/export-mindmap@0.1.8'

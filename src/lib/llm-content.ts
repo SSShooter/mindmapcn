@@ -150,7 +150,7 @@ const data: MindElixirData = {
 export function MyMindMap() {
   return (
     // Give the container an explicit height — the map fills 100% of its parent.
-    <div className="h-[500px] w-full border rounded-lg overflow-hidden relative">
+    <div className="h-125 w-full border rounded-lg overflow-hidden relative">
       <MindMap data={data} readonly>
         <MindMapControls />
       </MindMap>

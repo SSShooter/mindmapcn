@@ -31,7 +31,7 @@ import {
 } from "mind-elixir";
 import MindElixir from "mind-elixir";
 import { plaintextToMindElixir } from "mind-elixir/plaintextConverter";
-import { domToBlob } from "@mind-elixir/export-mindmap";
+import { exportImageBlob } from "@mind-elixir/export-mindmap";
 
 /** Custom markdown parser — same signature as Mind Elixir `Options.markdown`. */
 export type MindMapMarkdownParser = NonNullable<Options["markdown"]>;
@@ -620,11 +620,8 @@ export function MindMapControls({
   const handleExport = async () => {
     if (mind) {
       try {
-        // Export as image using the SCST engine
-        const blob = await domToBlob(mind.nodes, "jpeg", {
-          quality: 1,
-          backgroundColor: mind.theme.cssVar["--bgcolor"],
-        });
+        // Export as image using the @mind-elixir/export-mindmap plugin
+        const blob = await exportImageBlob(mind, "jpeg");
         // Use root node's topic as filename
         const rootTopic = mind.nodeData.topic || "mindmap";
         const filename = `${rootTopic}.jpg`;
