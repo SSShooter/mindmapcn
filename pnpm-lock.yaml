@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@mind-elixir/export-mindmap':
-        specifier: 0.1.8
-        version: 0.1.8
+        specifier: 0.1.9
+        version: 0.1.9
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -533,8 +533,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mind-elixir/export-mindmap@0.1.8':
-    resolution: {integrity: sha512-vSttIWwyzAiSDkMviWNm48b+Ujguf0ysSsYV/JEVWdVG1mmKCekPN8Ezon0fZnY6dtKmNwVBFnwKKOfS0Cq3IA==}
+  '@mind-elixir/export-mindmap@0.1.9':
+    resolution: {integrity: sha512-qwnEQnNbQHlkRiWVXvJNmeSrOh4b8EYg5uuNVnEyV+PDnvTuVP0lS/ubFg/hZ9xXUr1EtOCyUUKdq1q5CT7oYg==}
 
   '@modelcontextprotocol/sdk@1.25.2':
     resolution: {integrity: sha512-LZFeo4F9M5qOhC/Uc1aQSrBHxMrvxett+9KLHt7OhcExtoiRN9DKgbZffMP/nxjutWDQpfMDfP3nkHI4X9ijww==}
@@ -3954,7 +3954,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@mind-elixir/export-mindmap@0.1.8': {}
+  '@mind-elixir/export-mindmap@0.1.9': {}
 
   '@modelcontextprotocol/sdk@1.25.2(hono@4.11.3)(zod@3.25.76)':
     dependencies:

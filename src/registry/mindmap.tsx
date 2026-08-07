@@ -621,7 +621,9 @@ export function MindMapControls({
     if (mind) {
       try {
         // Export as image using the @mind-elixir/export-mindmap plugin
-        const blob = await exportImageBlob(mind, "jpeg");
+        const blob = await exportImageBlob(mind, "jpeg", {
+          watermarkEnabled: false,
+        });
         // Use root node's topic as filename
         const rootTopic = mind.nodeData.topic || "mindmap";
         const filename = `${rootTopic}.jpg`;
