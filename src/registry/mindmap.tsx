@@ -556,12 +556,12 @@ export const MindMap = forwardRef<MindMapRef, MindMapProps>(function MindMap(
 
   return (
     <MindMapContext.Provider value={{ mind: mindInstance, isLoaded }}>
-      <div className={cn("relative w-full h-full", className)}>
+      <div className={cn("relative w-full h-full bg-background rounded-lg overflow-hidden", className)}>
         <div
           key={id}
           ref={containerRef}
           id={`mindmap-${id}`}
-          className="w-full h-full bg-background rounded-lg overflow-hidden"
+          className="w-full h-full"
         />
         {!isLoaded ? loader || <DefaultLoader /> : null}
         {children}
